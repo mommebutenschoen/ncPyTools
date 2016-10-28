@@ -1,0 +1,3 @@
+"""
+ncdfView package initialisation.
+"""
