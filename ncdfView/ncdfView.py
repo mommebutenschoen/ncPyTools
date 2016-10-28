@@ -7,6 +7,10 @@ from os import listdir, getcwd
 from numpy import zeros
 from netCDF4 import Dataset
 from netCDF4 import num2date as n2d
+try:
+    ucstr = unicode
+except NameError:
+    ucstr = str
 
 
 class ncdfView(Dataset):
@@ -111,16 +115,16 @@ class ncdfView(Dataset):
             u'-----------------'
         for key in self.ncattrs():
             infoStr += u'\n\n'+key+u':\t'
-            infoStr += unicode(self.getncattr(key))
+            infoStr += ucstr(self.getncattr(key))
         dimList = self.dimensions.items()
         dimList = [(key, dim, len(dim)) for key, dim in dimList]
         dimList.sort(key=lambda x: x[0])
         for key, dim, size in dimList:
             infoStr += u'\n\t'+key
             if dim.isunlimited():
-                infoStr += u'\tUNLIMITED => ' + unicode(size)
+                infoStr += u'\tUNLIMITED => ' + ucstr(size)
             else:
-                infoStr += u'\t' + unicode(size)
+                infoStr += u'\t' + ucstr(size)
         infoStr += u'\n\n'+u'Variables:\n'
         varList = list(self.variables.items())
         varList.sort(key=lambda x: x[0])
@@ -129,22 +133,22 @@ class ncdfView(Dataset):
             infoStr += '\n\t'+key+':'
             for k in var.ncattrs():
                 if k == 'long_name':
-                    infoStr += u'\t' + unicode(getattr(var, k))
+                    infoStr += u'\t' + ucstr(getattr(var, k))
                 elif k == 'units':
-                    infoStr += u'\t' + '[' + unicode(getattr(var, k)+']')
-            infoStr += u'\n\t\t' + unicode(var.dimensions) + '=' +\
-                unicode(var.shape)
-            infoStr += u'\t' + unicode(var.dtype)
+                    infoStr += u'\t' + '[' + ucstr(getattr(var, k)+']')
+            infoStr += u'\n\t\t' + ucstr(var.dimensions) + '=' +\
+                ucstr(var.shape)
+            infoStr += u'\t' + ucstr(var.dtype)
         return infoStr
 
     def varInfo(self, varStr):
         try:
             var = self.variables[varStr]
-            infoStr = u'\n\t' + varStr + unicode(var.dimensions) +\
-                u': '+unicode(var.shape) + u'\t'+unicode(var.dtype)
+            infoStr = u'\n\t' + varStr + ucstr(var.dimensions) +\
+                u': '+ucstr(var.shape) + u'\t'+ucstr(var.dtype)
             for k in var.ncattrs():
-                infoStr += u'\n\t\t' + unicode(k) + u':\t' +\
-                    unicode(getattr(var,k)) + u'\n'
+                infoStr += u'\n\t\t' + ucstr(k) + u':\t' +\
+                    ucstr(getattr(var,k)) + u'\n'
             print(infoStr)
         except KeyError:
             print('Variable "' + varStr + '" not found!')
