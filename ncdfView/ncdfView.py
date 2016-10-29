@@ -7,10 +7,12 @@ from os import listdir, getcwd
 from numpy import zeros
 from netCDF4 import Dataset
 from netCDF4 import num2date as n2d
+import re
 try:
     ucstr = unicode
 except NameError:
     ucstr = str
+from pdb import set_trace
 
 
 class ncdfView(Dataset):
@@ -18,8 +20,6 @@ class ncdfView(Dataset):
         return self
 
     def __init__(self, filename, Mask=True, Quiet=False):
-        if not Quiet:
-            print('Opening nCDF-file %s ...' % filename)
         Dataset.__init__(self, filename, 'r')
         if Mask:
             for var in self.variables.values():
@@ -31,15 +31,12 @@ class ncdfView(Dataset):
         Lon = None
         for key, var in self.variables.items():
             try:
-                if var.units == 'degrees_east':
-                    print("...extracting longitude...")
                 try:
                     lon = self.variables[key+'_bnds'][:]
                     if lon.shape[1] == 2:
                         Lon = zeros(lon.shape[0]+1)
                         Lon[:-1] = lon[:, 0]
                         Lon[-1] = lon[-1, 1]
-                        print("bnd")
                     else:
                         Lon = lon
                 except:
@@ -52,15 +49,12 @@ class ncdfView(Dataset):
         Lat = None
         for key, var in self.variables.items():
             try:
-                if var.units == 'degrees_north':
-                    print("...extracting latitude...")
                 try:
                     lat = self.variables[key+'_bnds'][:]
                     if lat.shape[1] == 2:
                         Lat = zeros(lat.shape[0]+1)
                         Lat[:-1] = lat[:, 0]
                         Lat[-1] = lat[-1, 1]
-                        print("bnd")
                     else:
                         Lat = lat
                 except:
@@ -73,14 +67,12 @@ class ncdfView(Dataset):
         Time = None
         for key, Var in self.variables.items():
             if key in ('time', 'days', 'hours', 'minutes', 'seconds'):
-                print("...found ", key, "...")
                 Time = Var[:]
             else:
                 try:
                     # if this doesn't fail it's a time variable
                     Date = n2d(0, Var.units)
                     Time = Var[:]
-                    print("...found ", key, "...")
                 except:
                     pass
             return Time
@@ -88,13 +80,10 @@ class ncdfView(Dataset):
     def dates(self):
         Dates = None
         for key, Var in self.variables.items():
-            if key=='time':
-                print("...found ", key, "...")
+            if key == 'time':
                 n2d(0, Var.units)
                 try:
                     Dates = n2d(0, Var.units)
-                    print("...found ", key, Var.units, "...")
-                    print("Reference date of time variable: ", Dates)
                     Dates = n2d(Var[:], Var.units)
                 except:
                     pass
@@ -110,35 +99,57 @@ class ncdfView(Dataset):
                 return self.variables[varStr][:]
 
     def __unicode__(self):
-        infoStr = u'-----------------\n' +\
-            u'netCDF Object:\n' +\
-            u'-----------------'
+        barLength = len(self.filepath())
+        # write filename as 1st level title:
+        infoStr = u'=' * barLength + u'\n' +\
+            self.filepath() + u'\n' +\
+            u'=' * barLength + u'\n\n\n'
+        # write global attributes as 2nd level title:
+        title = u'Global Attributes:'
+        barLength = len(title)
+        infoStr += u'#' * barLength + u'\n' +\
+            title + '\n' +\
+            u'#' * barLength + u'\n'
         for key in self.ncattrs():
-            infoStr += u'\n\n'+key+u':\t'
-            infoStr += ucstr(self.getncattr(key))
+            infoStr += u'\n'+key+u':\n   '
+            attr = ucstr(self.getncattr(key))
+            r = re.compile(r'\n')
+            attr = r.sub(r'\n  ', attr)
+            infoStr += ucstr(attr) + u'\n'
+        infoStr += '\n\n'
         dimList = self.dimensions.items()
         dimList = [(key, dim, len(dim)) for key, dim in dimList]
         dimList.sort(key=lambda x: x[0])
+        title = u'Dimensions:'
+        barLength = len(title)
+        infoStr += title + '\n' +\
+            u'-' * barLength + u'\n'
         for key, dim, size in dimList:
-            infoStr += u'\n\t'+key
+            infoStr += u'\n' + key + u':'
             if dim.isunlimited():
-                infoStr += u'\tUNLIMITED => ' + ucstr(size)
+                infoStr += u'\n   UNLIMITED => ' + ucstr(size)
             else:
-                infoStr += u'\t' + ucstr(size)
-        infoStr += u'\n\n'+u'Variables:\n'
+                infoStr += u'\n   ' + ucstr(size)
+        infoStr += u'\n\n'
+        title = u'Variables:'
+        barLength = len(title)
+        infoStr += title + '\n' +\
+            u'-' * barLength + u'\n'
         varList = list(self.variables.items())
         varList.sort(key=lambda x: x[0])
         for key, var in varList:
-            print(key)
-            infoStr += '\n\t'+key+':'
+            infoStr += '\n'+key+':'
+            metadata = {}
             for k in var.ncattrs():
-                if k == 'long_name':
-                    infoStr += u'\t' + ucstr(getattr(var, k))
-                elif k == 'units':
-                    infoStr += u'\t' + '[' + ucstr(getattr(var, k)+']')
-            infoStr += u'\n\t\t' + ucstr(var.dimensions) + '=' +\
+                metadata[k] = ucstr(getattr(var, k))
+            print(metadata.keys())
+            if 'long_name' in metadata.keys():
+                infoStr += '\n  ' + ucstr(getattr(var, 'long_name'))
+            if 'units' in metadata.keys():
+                infoStr += u'\n  ' + '[' + ucstr(getattr(var, 'units')+']')
+            infoStr += u'\n  ' + ucstr(var.dimensions) + '=' +\
                 ucstr(var.shape)
-            infoStr += u'\t' + ucstr(var.dtype)
+            infoStr += u'\n  ' + ucstr(var.dtype)
         return infoStr
 
     def varInfo(self, varStr):
@@ -148,7 +159,7 @@ class ncdfView(Dataset):
                 u': '+ucstr(var.shape) + u'\t'+ucstr(var.dtype)
             for k in var.ncattrs():
                 infoStr += u'\n\t\t' + ucstr(k) + u':\t' +\
-                    ucstr(getattr(var,k)) + u'\n'
+                    ucstr(getattr(var, k)) + u'\n'
             print(infoStr)
         except KeyError:
             print('Variable "' + varStr + '" not found!')
@@ -178,4 +189,3 @@ if __name__ == "__main__":
         print(str([el for el in listdir(getcwd()) if el[-3:] == '.nc']))
         filename = input('Give netCDF file name: ')
     nc = ncdfView(filename)
-    print('created ncdf Object nCDF.')
