@@ -18,9 +18,12 @@ ncdfView
 Simple python wrapper around the python-netCDF4 library to read `netcdf` files
 from the command line.
 
-Help string::
+Useage
+^^^^^^
 
-  usage: ncdfView.py [-h] [-o] [-q QUIET] [-n NOMASK] [filename]
+Help-string::
+  
+  ncdfView.py [-h] [-o] [-q QUIET] [-n NOMASK] [filename]
 
   Read netcdf files from command line.
 
@@ -34,6 +37,10 @@ Help string::
                           Suppress header outputs.
     -n NOMASK, --nomask NOMASK
                           Don't mask fill values
+In order to obatin an interactive prompt with the netcdf file loaded into a the `ncdfView` object called `nc`
+launch::
+
+  python3 -i -m ncPyTools.ncdfViewncPyTools.ncdfView
 
 Installation:
 ^^^^^^^^^^^^^
@@ -42,8 +49,8 @@ After downloading the source from the repository install via pip, descend
 into the top-level of the source tree
 and launch::
 
-  pip install .
+  pip3 install .
 
 or to install in developers mode::
 
-  pip install -e .
+  pip3 install -e .
