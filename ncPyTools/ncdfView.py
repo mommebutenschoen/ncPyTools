@@ -175,7 +175,7 @@ class ncdfView(Dataset):
             raise
 
 
-def main():
+def netCDFView():
     import argparse
     parser = argparse.ArgumentParser(
         description='Read netcdf files from command line.')
@@ -203,4 +203,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    netCDFView()
