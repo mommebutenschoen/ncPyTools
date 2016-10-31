@@ -5,6 +5,7 @@ ncPyTools
 
 Python tools for the handling of `netcdf` files based on the `python-netCDF4`
 library.
+These tools currently only support files of `netcdf` **classic** structure.
 
 
 ##############
@@ -22,7 +23,7 @@ Useage
 ^^^^^^
 
 Help-string::
-  
+
   ncdfView.py [-h] [-o] [-q QUIET] [-n NOMASK] [filename]
 
   Read netcdf files from command line.
