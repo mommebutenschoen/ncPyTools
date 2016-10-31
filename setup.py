@@ -25,7 +25,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='16.11',
 
-    description='Python processing for scientific bibliographies.',
+    description='Python processing of netcdf files.',
     long_description=long_description,
 
     # The project's main homepage.
