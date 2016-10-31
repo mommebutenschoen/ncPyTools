@@ -43,8 +43,56 @@ launch::
 
   python3 -i -m ncPyTools.ncdfViewncPyTools.ncdfView
 
+
+netCDFTemplate:
+---------------
+
+Useage
+^^^^^^
+
+Help-string::
+
+  usage: netCDFTemplate [-h] [-c COMPRESS] yamlfile
+
+  Create netcdf file from yaml metadata.
+
+  positional arguments:
+    yamlfile              yaml metadata file.
+
+  optional arguments:
+    -h, --help            show this help message and exit
+    -c COMPRESS, --compress COMPRESS
+                          Compression level (0 = no compression, 9 = maximum
+                          compression)
+
+Example `yaml` metadata file::
+
+  filename: month_flux_2006c.nc
+  dimensions:
+      t: None
+      y: 45
+      x: 72
+  unlimited_shape:
+      t: 12
+  variables:
+      LAT:
+          long_name: latitude
+          units: degrees_north
+          value: 1.e12
+          fill_value: 1.e12
+          dimensions: y
+          type: f4
+      LON:
+          long_name: longitude
+          units: degrees_east
+          value: 1.e12
+          fill_value: 1.e12
+          dimensions: x
+          type: f4
+
+
 Installation:
-^^^^^^^^^^^^^
+-------------
 
 After downloading the source from the repository install via pip, descend
 into the top-level of the source tree
