@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: latin-1 -*-
-
 from __future__ import print_function
 from numpy import zeros
 from netCDF4 import Dataset
@@ -16,7 +13,7 @@ except NameError:
     inpfunct = input  # python3
 
 
-class ncdfView(Dataset):
+class netCDFView(Dataset):
     def __enter__(self,):
         return self
 
@@ -175,7 +172,7 @@ class ncdfView(Dataset):
             raise
 
 
-def netCDFView():
+def ncdfView():
     import argparse
     parser = argparse.ArgumentParser(
         description='Read netcdf files from command line.')
@@ -199,8 +196,9 @@ def netCDFView():
         Mask = False
     if not filename:
         filename = ucstr(inpfunct('Give netCDF file name: '))
-    return ncdfView(filename, Mask=Mask, Quiet=args.quiet)
+    nc = netCDFView(filename, Mask=Mask, Quiet=args.quiet)
+    return nc
 
 
 if __name__ == "__main__":
-    nc = netCDFView()
+    nc = ncdfView()
