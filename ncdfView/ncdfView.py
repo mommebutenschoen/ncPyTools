@@ -2,17 +2,18 @@
 # -*- coding: latin-1 -*-
 
 from __future__ import print_function
-from sys import argv
-from os import listdir, getcwd
 from numpy import zeros
 from netCDF4 import Dataset
 from netCDF4 import num2date as n2d
 import re
 try:
-    ucstr = unicode
+    ucstr = unicode  # python2
 except NameError:
-    ucstr = str
-from pdb import set_trace
+    ucstr = str  # python3
+try:
+    inpfunct = raw_input  # python2
+except NameError:
+    inpfunct = input  # python3
 
 
 class ncdfView(Dataset):
@@ -173,19 +174,33 @@ class ncdfView(Dataset):
             print("Traceback:", tb)
             raise
 
-if __name__ == "__main__":
-    fn = None
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Read netcdf files from command line.')
+    parser.add_argument(
+        'filename', type=str, nargs='?',
+        help='Filename of the netfdf file to open.'
+        )
+    parser.add_argument(
+        '-o', '--object', action="store_true",
+        help='Open file as pure netCDF4 object.')
+    parser.add_argument(
+        '-q', '--quiet',
+        help='Suppress header outputs.')
+    parser.add_argument(
+        '-n', '--nomask',
+        help="Don't mask fill values")
+    args = parser.parse_args()
+    filename = args.filename
     Mask = True
-    if len(argv) < 2:
-        print(str([el for el in listdir(getcwd()) if el[-3:] == '.nc']))
-        filename = input('Give netCDF file name: ')
-    else:
-        for arg in argv[1:]:
-            if arg == '-nm':
-                Mask = False
-            else:
-                filename = argv[1]
+    if args.nomask:
+        Mask = False
     if not filename:
-        print(str([el for el in listdir(getcwd()) if el[-3:] == '.nc']))
-        filename = input('Give netCDF file name: ')
-    nc = ncdfView(filename)
+        filename = ucstr(inpfunct('Give netCDF file name: '))
+    nc = ncdfView(filename, Mask=Mask, Quiet=args.quiet)
+
+
+if __name__ == "__main__":
+    main()
