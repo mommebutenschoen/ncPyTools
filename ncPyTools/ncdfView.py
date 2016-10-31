@@ -199,8 +199,8 @@ def netCDFView():
         Mask = False
     if not filename:
         filename = ucstr(inpfunct('Give netCDF file name: '))
-    nc = ncdfView(filename, Mask=Mask, Quiet=args.quiet)
+    return ncdfView(filename, Mask=Mask, Quiet=args.quiet)
 
 
 if __name__ == "__main__":
-    netCDFView()
+    nc = netCDFView()
