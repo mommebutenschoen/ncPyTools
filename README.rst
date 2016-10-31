@@ -12,7 +12,6 @@ Tools inlcuded
 ##############
 
 
---------
 ncdfView
 --------
 
@@ -35,3 +34,16 @@ Help string::
                           Suppress header outputs.
     -n NOMASK, --nomask NOMASK
                           Don't mask fill values
+
+Installation:
+^^^^^^^^^^^^^
+
+After downloading the source from the repository install via pip, descend
+into the top-level of the source tree
+and launch::
+
+  pip install .
+
+or to install in developers mode::
+
+  pip install -e .
