@@ -97,10 +97,14 @@ class netCDFView(Dataset):
                 return self.variables[varStr][:]
 
     def __unicode__(self):
-        barLength = len(self.filepath())
+        try:
+            objectname = self.filepath()
+        except ValueError:
+            objectname = "netCDF4 Object"
+        barLength = len(objectname)
         # write filename as 1st level title:
         infoStr = u'=' * barLength + u'\n' +\
-            self.filepath() + u'\n' +\
+            objectname + u'\n' +\
             u'=' * barLength + u'\n\n\n'
         # write global attributes as 2nd level title:
         title = u'Global Attributes:'
@@ -140,7 +144,6 @@ class netCDFView(Dataset):
             metadata = {}
             for k in var.ncattrs():
                 metadata[k] = ucstr(getattr(var, k))
-            print(metadata.keys())
             if 'long_name' in metadata.keys():
                 infoStr += '\n  ' + ucstr(getattr(var, 'long_name'))
             if 'units' in metadata.keys():
