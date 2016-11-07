@@ -1,3 +1,3 @@
 """
-ncdfView package initialisation.
+ncPyTools package initialisation.
 """

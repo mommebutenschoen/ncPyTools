@@ -1,7 +1,7 @@
 
-=========
-ncPyTools
-=========
+================
+ncPyTools README
+================
 
 Python tools for the handling of `netcdf` files based on the `python-netCDF4`
 library.
@@ -38,6 +38,7 @@ Help-string::
                           Suppress header outputs.
     -n NOMASK, --nomask NOMASK
                           Don't mask fill values
+
 In order to obatin an interactive prompt with the netcdf file loaded into a the `ncdfView` object called `nc`
 launch::
 

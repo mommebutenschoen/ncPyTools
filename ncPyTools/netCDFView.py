@@ -14,10 +14,22 @@ except NameError:
 
 
 class netCDFView(Dataset):
+    """
+    Class for quick inspection of netCDF files reading in a netCDF file
+    into a netCDF4 object in read-only mode.
+    """
     def __enter__(self,):
         return self
 
     def __init__(self, filename, Mask=True, Quiet=False):
+        """
+        Initialise netCDF4 object.
+
+        Args:
+            filename (str): Path to netCDF file.
+            Mask (bool): Mask variables with their fill value.
+            Quiet (bool): Suppress output of netCDF header information.
+        """
         Dataset.__init__(self, filename, 'r')
         if Mask:
             for var in self.variables.values():
@@ -26,6 +38,12 @@ class netCDFView(Dataset):
             print(self)
 
     def lon(self):
+        """
+        Try to extract longitude.
+
+        Returns:
+            Longitude variable data, `None` if unsuccessful.
+        """
         Lon = None
         for key, var in self.variables.items():
             try:
@@ -44,6 +62,12 @@ class netCDFView(Dataset):
         return Lon
 
     def lat(self):
+        """
+        Try to extract latitude.
+
+        Returns:
+            Latitude variable data, `None` if unsuccessful.
+        """
         Lat = None
         for key, var in self.variables.items():
             try:
@@ -62,6 +86,13 @@ class netCDFView(Dataset):
         return Lat
 
     def time(self):
+        """
+        Try to extract time.
+
+        Returns:
+            Time variable data, `None` if unsuccessful.
+        """
+
         Time = None
         for key, Var in self.variables.items():
             if key in ('time', 'days', 'hours', 'minutes', 'seconds'):
@@ -76,6 +107,13 @@ class netCDFView(Dataset):
             return Time
 
     def dates(self):
+        """
+        Try to extract dates.
+
+        Returns:
+            Time variable as datetime object, `None` if unsuccessful.
+        """
+
         Dates = None
         for key, Var in self.variables.items():
             if key == 'time':
@@ -88,6 +126,17 @@ class netCDFView(Dataset):
         return Dates
 
     def __call__(self, varStr, Squeeze=True, Object=False):
+        """Get netcdf variable.
+
+        Args:
+            varStr (str): Variable to extract.
+            Squeeze (bool): Remove singleton dimensions.
+            Object (bool): Return actual netCDF4 object (`True`) or variable
+                or data (`False`).
+
+        Returns:
+            netCDF4 variable object or data.
+        """
         if Object:
             return self.variables[varStr]
         else:
@@ -97,6 +146,7 @@ class netCDFView(Dataset):
                 return self.variables[varStr][:]
 
     def __unicode__(self):
+        """netCDF file header in `reStructuredText` format."""
         try:
             objectname = self.filepath()
         except ValueError:
@@ -154,6 +204,14 @@ class netCDFView(Dataset):
         return infoStr
 
     def varInfo(self, varStr):
+        """Extract variable metadata.
+
+        Args:
+            varStr (str): variable key.
+
+        Returns:
+            str: Variable meta data.
+        """
         try:
             var = self.variables[varStr]
             infoStr = u'\n\t' + varStr + ucstr(var.dimensions) +\
@@ -176,6 +234,12 @@ class netCDFView(Dataset):
 
 
 def ncdfView():
+    """
+    Main entry-point function using argument parser.
+
+    Example:
+        `netCDFView -h`
+    """
     import argparse
     parser = argparse.ArgumentParser(
         description='Read netcdf files from command line.')

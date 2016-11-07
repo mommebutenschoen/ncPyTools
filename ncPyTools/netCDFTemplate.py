@@ -6,15 +6,36 @@ from numpy import ones
 
 
 class netCDFTemplate:
+    """
+    Class for generating netcdf templates.
+    This class is mainly intended for the easy generation of netcdf files with
+    a data layout defined in yaml metadata files, that are then to be filled
+    with actual data.
+    """
+
     def __init__(self, yamlfile):
+        """
+        Initialise a netCDFTemplate objerct with the yaml file that describes
+        the data structure.
+
+        Args:
+            yamlfile (str): `yaml` file describing data structure.
+        """
         print("Loading {}".format(yamlfile))
         D = self._loadYaml(yamlfile)
         self._setAttributes(D)
 
-    def __call__(self, compress=True):
+    def __call__(self, compress=5):
+        """Writes the template object to a file.
+        The optional `compress` keyword provides the compression level to be
+        used for all variables.
+
+        Args:
+            compress (int): compression level to be used for all variables.
+        """
         self._writeNCDF(compress=compress)
 
-    def _writeNCDF(self, compress=True):
+    def _writeNCDF(self, compress=5):
         nc = Dataset(self.filename, mode="w")
         print("Creating {}".format(self.filename))
         if hasattr(self, "global_attributes"):
@@ -88,6 +109,12 @@ class netCDFTemplate:
 
 
 def ncdfTemplate():
+    """
+    Main entry-point function using argument parser.
+
+    Example:
+        `netCDFView -h`
+    """
     parser = ArgumentParser(
         description='Create netcdf file from yaml metadata.')
     parser.add_argument(
