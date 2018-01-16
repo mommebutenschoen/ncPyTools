@@ -118,11 +118,14 @@ class netCDFView(Dataset):
         for key, Var in self.variables.items():
             if key == 'time':
                 n2d(0, Var.units)
+                if "calendar" in nc.variables["time"].ncattrs():
+                    calstr=nc.variables["time"].calendar
+                else:
+                    calstr="standard"
                 try:
-                    Dates = n2d(0, Var.units)
-                    Dates = n2d(Var[:], Var.units)
+                    Dates = n2d(Var[:], Var.units,calendar=calstr)
                 except:
-                    pass
+                    print("Couldn't find time variable with valid date units.")
         return Dates
 
     def __call__(self, varStr, Squeeze=True, Object=False):
