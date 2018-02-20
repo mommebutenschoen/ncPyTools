@@ -13,7 +13,7 @@ class netCDFTemplate:
     with actual data.
     """
 
-    def __init__(self, yamlfile):
+    def __init__(self, yamlfile,verbose=False):
         """
         Initialise a netCDFTemplate objerct with the yaml file that describes
         the data structure.
@@ -21,11 +21,11 @@ class netCDFTemplate:
         Args:
             yamlfile (str): `yaml` file describing data structure.
         """
-        print("Loading {}".format(yamlfile))
+        if verbose: print("Loading {}".format(yamlfile))
         D = self._loadYaml(yamlfile)
         self._setAttributes(D)
 
-    def __call__(self, compress=5):
+    def __call__(self, compress=5,verbose=False):
         """Writes the template object to a file.
         The optional `compress` keyword provides the compression level to be
         used for all variables.
@@ -33,11 +33,11 @@ class netCDFTemplate:
         Args:
             compress (int): compression level to be used for all variables.
         """
-        self._writeNCDF(compress=compress)
+        self._writeNCDF(compress=compress,verbose=verbose)
 
-    def _writeNCDF(self, compress=5):
+    def _writeNCDF(self, compress=5, verbose=False):
         nc = Dataset(self.filename, mode="w")
-        print("Creating {}".format(self.filename))
+        if verbose: print("Creating {}".format(self.filename))
         if hasattr(self, "global_attributes"):
             nc.setncatts(self.global_attributes)
         for k, v in self.dimensions.items():
@@ -45,18 +45,18 @@ class netCDFTemplate:
                 n = int(v)
             except TypeError:
                 n = None
-                print("\tDimension {} is UNLIMITED.".format(k))
+                if verbose: print("\tDimension {} is UNLIMITED.".format(k))
             else:
                 if n <= 0:
                     n = None
-                    print("\tDimension {} UNLIMITED.".format(k))
+                    if verbose: print("\tDimension {} UNLIMITED.".format(k))
             nc.createDimension(k, n)
         for k, v in self.variables.items():
             if v["dimensions"]:
                 dims = v["dimensions"].split(",")
             else:  # if dimensions undefined define as scalar
                 dims = ()
-                print("\tVariables {} is scalar.".format(k))
+                if verbose: print("\tVariables {} is scalar.".format(k))
             if "fill_value" in v.keys():
                 nc.createVariable(k, v["type"], dims, zlib=compress,
                                   complevel=compress,
@@ -85,7 +85,7 @@ class netCDFTemplate:
                 nc.variables[k][:] = conv(
                     self.variables[k]["value"])
         nc.close()
-        print("Done.")
+        if verbose: print("Done.")
 
     def _loadYaml(self, yamlfile):
         with open(yamlfile) as fid:
