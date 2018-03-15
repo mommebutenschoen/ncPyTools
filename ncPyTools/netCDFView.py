@@ -226,6 +226,37 @@ class netCDFView(Dataset):
         except KeyError:
             print('Variable "' + varStr + '" not found!')
 
+    def diff(self, varStr, refObj, refStr="", scaleFunction=0, relative=0):
+        """Difference of variable to reference data from another netCDFView object.
+
+        Args:
+            refObj (netCDFView object): object containing the reference data.
+                Must have the same geometry as the calling object.
+            varStr (str): string identifying the variable to compare
+            refStr (str): string of variable to compare in the reference object.
+                Defaults to varStr.
+            scaleFunction: function to scale reference data before comparison,
+                taking a single argument of the type of the reference data and
+                returning the same type and shape.
+                By default no scaling is applied. Should return data of the same shape and type as
+            relative(boolean): Flag to normalise differences.
+                0, default - no normalisation
+                1 - (scaled) reference data
+                2 - 0.5*(variables data + (scaled) reference data)
+        """
+        if refStr:
+            refData=refObj.variables[refStr][:]
+        else:
+            refData=refObj.variables[varStr][:]
+        if scaleFunction: refData=scaleFunction(refData)
+        delta=self.variables[varStr][:]-refData
+        if relative:
+            if relative==2:
+                delta/=0.5*(self.variables[varStr][:]+refData)
+            else:
+                delta/=refdata
+        return delta
+
     def __exit__(self, etype, evalue, tb):
         if tb is None:
             self.close()
