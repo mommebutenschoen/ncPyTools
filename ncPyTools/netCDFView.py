@@ -226,7 +226,7 @@ class netCDFView(Dataset):
         except KeyError:
             print('Variable "' + varStr + '" not found!')
 
-    def diff(self, varStr, refObj, refStr="", scaleFunction=0, relative=0):
+    def diff(self, varStr, refObj, refStr="", scaleFunction=0, relative=0, Squeeze=True):
         """Difference of variable to reference data from another netCDFView object.
 
         Args:
@@ -249,7 +249,10 @@ class netCDFView(Dataset):
         else:
             refData=refObj.variables[varStr][:]
         if scaleFunction: refData=scaleFunction(refData)
-        delta=self.variables[varStr][:]-refData
+        if Squeeze: refData=refData.squeeze()
+        data=self.variables[varStr][:]
+        if Squeeze: data=data.squeeze()
+        delta=data-refData
         if relative:
             if relative==2:
                 delta/=0.5*(self.variables[varStr][:]+refData)
