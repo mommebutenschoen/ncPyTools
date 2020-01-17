@@ -2,6 +2,7 @@
 
 from netCDF4 import Dataset
 from pathlib import Path
+from numpy import where
 
 def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
     """ Rounds list of variables in input file to a given number of significant Xdigits.
@@ -31,6 +32,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
         for name, variable in src.variables.items():
             attributes=src[name].__dict__
             fv=attributes.pop("_FillValue",None)
+            data=src[name][:]
             if name not in vlist:
                 if fv is None:
                     x = dst.createVariable(name,variable.datatype,variable.dimensions)
@@ -61,7 +63,8 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
     """
 
     p=Path(fname)
-    newsuffix="16bits{}".format(p.suffix)
+    bits=16
+    newsuffix="{}bit{}".format(bits,p.suffix)
     packedfile=file=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
     if Quiet: print("Packing variables {}...".format(vlist))
     with Dataset("{}".format(p)) as src, Dataset("{}".format(packedfile), "w") as dst:
@@ -75,6 +78,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
         for name, variable in src.variables.items():
             attributes=src[name].__dict__
             fv=attributes.pop("_FillValue",None)
+            data=src[name][:]
             if name not in vlist:
                 if fv is None:
                     x = dst.createVariable(name,variable.datatype,variable.dimensions)
