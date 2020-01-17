@@ -20,7 +20,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
     p=Path(fname)
     newsuffix="{}digits{}".format(digits,p.suffix)
     packedfile=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
-    if Quiet: print("Rounding variables {}...".format(vlist))
+    if not Quiet: print("Rounding variables {}...".format(vlist))
     with Dataset("{}".format(p)) as src, Dataset("{}".format(packedfile), "w") as dst:
         # copy global attributes all at once via dictionary
         dst.setncatts(src.__dict__)
@@ -39,7 +39,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
                 else:
                     x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
             else:
-                if Quiet: print("Rounding {}...".format(name))
+                if not Quiet: print("Rounding {}...".format(name))
                 if fv is None:
                     x = dst.createVariable(name, 'f4',variable.dimensions,zlib=True,complevel=9,least_significant_digit=digits)
                 else:
@@ -47,7 +47,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
             dst[name][:] = src[name][:]
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
-    if Quiet: print("Done.")
+    if not Quiet: print("Done.")
     return packedfilename
 
 def netCDFPack(fname,vlist,outpath="",Quiet=False):
@@ -67,7 +67,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
     bits=16
     newsuffix="{}bit{}".format(bits,p.suffix)
     packedfile=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
-    if Quiet: print("Packing variables {}...".format(vlist))
+    if not Quiet: print("Packing variables {}...".format(vlist))
     with Dataset("{}".format(p)) as src, Dataset("{}".format(packedfile), "w") as dst:
         # copy global attributes all at once via dictionary
         dst.setncatts(src.__dict__)
@@ -86,7 +86,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                 else:
                     x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
             else:
-                if Quiet: print("Packing {}...".format(name))
+                if not Quiet: print("Packing {}...".format(name))
                 offset=data.min()
                 scale=(data.max()-offset)
                 if fv is None:
@@ -105,5 +105,5 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     dst[name].scale_factor=scale
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
-    if Quiet: print("Done.")
+    if not Quiet: print("Done.")
     return packedfile
