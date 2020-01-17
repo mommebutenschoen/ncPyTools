@@ -19,7 +19,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
 
     p=Path(fname)
     newsuffix="{}digits{}".format(digits,p.suffix)
-    packedfile=file=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
+    packedfile=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
     if Quiet: print("Rounding variables {}...".format(vlist))
     with Dataset("{}".format(p)) as src, Dataset("{}".format(packedfile), "w") as dst:
         # copy global attributes all at once via dictionary
@@ -48,6 +48,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
     if Quiet: print("Done.")
+    return packedfilename
 
 def netCDFPack(fname,vlist,outpath="",Quiet=False):
     """ Packs list of variables in input file into 16bits integers with scale and offset.
@@ -65,7 +66,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
     p=Path(fname)
     bits=16
     newsuffix="{}bit{}".format(bits,p.suffix)
-    packedfile=file=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
+    packedfile=p.parents[0] / "{}.{}".format(p.stem,newsuffix)
     if Quiet: print("Packing variables {}...".format(vlist))
     with Dataset("{}".format(p)) as src, Dataset("{}".format(packedfile), "w") as dst:
         # copy global attributes all at once via dictionary
@@ -105,3 +106,4 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
     if Quiet: print("Done.")
+    return packedfile
