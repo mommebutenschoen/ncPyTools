@@ -47,7 +47,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
             dst[name].setncatts(attributes)
     if Quiet: print("Done.")
 
-def netCDFPack(fname,vlist,outpath="",quiet=False):
+def netCDFPack(fname,vlist,outpath="",Quiet=False):
     """ Packs list of variables in input file into 16bits integers with scale and offset.
     Writes to file in outpath with same name as input file, but inserting the .Xdigits
     suffix before the filetype suffix.
