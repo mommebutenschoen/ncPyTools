@@ -2,7 +2,7 @@
 
 from netCDF4 import Dataset
 from pathlib import Path
-from numpy import where
+from numpy import where,rint
 
 def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
     """ Rounds list of variables in input file to a given number of significant Xdigits.
@@ -87,16 +87,20 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
             else:
                 if not Quiet: print("Packing {}...".format(name))
-                offset=data.min()
-                scale=(data.max()-offset)
+                dmin=data.min()
+                dmax=data.max()
+                N=2**bits
+                N2=2**(bits-1)
+                scale=(dmax-dmin)
+                offset=.5*(dmax+dmin)
                 if fv is None:
-                    x = dst.createVariable(name, 'u2',variable.dimensions,zlib=True,complevel=9)
-                    scale/=(2**bits-1) # scale data from 0 to 2**bits -1
+                    x = dst.createVariable(name, 'i2',variable.dimensions,zlib=True,complevel=9)
+                    scale/=(N-1) # scale data from -2**bits/2 to 2**bits/2 - 1
                 else:
-                    fv=2**bits-1 # Fill Value is maximum integer
-                    x = dst.createVariable(name, 'u2',variable.dimensions,zlib=True,complevel=9,fill_value=fv)
-                    scale/=(2**bits-2)  # scale data from 0 to 2**bits -2
-                idata = (.5+(data-offset)/scale).astype('u2')
+                    fv=-N2 # Fill Value is minimum integer
+                    x = dst.createVariable(name, 'i2',variable.dimensions,zlib=True,complevel=9,fill_value=fv)
+                    scale/=(N-2)  # scale data from -2**bits/2 + 1 to 2**bits/2 - 1
+                idata = rint((data-offset)/scale).astype('i2')
                 if fv is None:
                     dst[name][:]=idata
                 else:
