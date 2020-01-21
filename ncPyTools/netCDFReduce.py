@@ -110,5 +110,9 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
+            if name in vlist:
+                if "missing_value" in variable.__dict__:
+                    print("Overwriting missing value...")
+                    dst[name].missing_value=-N2
     if not Quiet: print("Done.")
     return packedfile
