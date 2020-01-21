@@ -80,12 +80,8 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
             attributes=src[name].__dict__
             fv=attributes.pop("_FillValue",None)
             data=src[name][:]
-            if name not in vlist:
-                if fv is None:
-                    x = dst.createVariable(name,variable.datatype,variable.dimensions)
-                else:
-                    x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
-            else:
+
+            if name in vlist:
                 if not Quiet: print("Packing {}...".format(name))
                 dmin=data.min()
                 dmax=data.max()
@@ -107,6 +103,11 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     dst[name][:]=where(data[:].mask,fv,idata)
                     dst[name].add_offset=offset
                     dst[name].scale_factor=scale
+            else:
+                if fv is None:
+                    x = dst.createVariable(name,variable.datatype,variable.dimensions)
+                else:
+                    x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
     if not Quiet: print("Done.")
