@@ -108,6 +108,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     x = dst.createVariable(name,variable.datatype,variable.dimensions)
                 else:
                     x = dst.createVariable(name,variable.datatype,variable.dimensions,fill_value=fv)
+                dst[name][:]=data
             # copy variable attributes all at once via dictionary
             dst[name].setncatts(attributes)
             if name in vlist:
