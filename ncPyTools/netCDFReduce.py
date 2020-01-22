@@ -117,3 +117,33 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                     dst[name].missing_value=-N2
     if not Quiet: print("Done.")
     return packedfile
+
+def ncdfPack():
+    """
+    Main entry-point function using argument parser.
+
+    Example:
+        `netCDFView -h`
+    """
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Pack selected variables of netcdf files into short integers.')
+    parser.add_argument(
+        'filename', type=str, nargs='?',
+        help='Filename of the netfdf file to pack.'
+        )
+    parser.add_argument(
+        '-v', '--variables', nargs="+", required=True,
+        help='Variables to pack.')
+
+    args = parser.parse_args()
+    filename = args.filename
+    vlist = args.variables
+    if not filename:
+        filename = ucstr(inpfunct('Give netCDF file name: '))
+    nc = netCDFPack(filename, vlist)
+    return nc
+
+
+if __name__ == "__main__":
+    nc = ncdfPack()
