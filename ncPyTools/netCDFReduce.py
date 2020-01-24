@@ -79,8 +79,9 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
         for name, variable in src.variables.items():
             attributes=src[name].__dict__
             fv=attributes.pop("_FillValue",None)
-            data=src[name][:]
-
+            #convert data to machine precision:
+            dtp=type(0.)
+            data=src[name][:].astype(dtp) #convert to 64bit floats for higher precision in scaling
             if name in vlist:
                 if not Quiet: print("Packing {}...".format(name))
                 dmin=data.min()
