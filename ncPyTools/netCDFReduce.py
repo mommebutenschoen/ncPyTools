@@ -89,17 +89,21 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
                 N=2**bits
                 N2=2**(bits-1)
                 scale=(dmax-dmin)
-                offset=.5*(dmax+dmin)
                 if fv is None:
                     x = dst.createVariable(name, 'i2',variable.dimensions,zlib=True,complevel=9)
                     scale/=(N-1) # scale data from -2**bits/2 to 2**bits/2 - 1
+                    offset=dmin+N2*scale
                 else:
                     fv=-N2 # Fill Value is minimum integer
                     x = dst.createVariable(name, 'i2',variable.dimensions,zlib=True,complevel=9,fill_value=fv)
                     scale/=(N-2)  # scale data from -2**bits/2 + 1 to 2**bits/2 - 1
+                    offset=.5*(dmax+dmin)
+
                 idata = rint((data-offset)/scale).astype('i2')
                 if fv is None:
                     dst[name][:]=idata
+                    dst[name].add_offset=offset
+                    dst[name].scale_factor=scale
                 else:
                     dst[name][:]=where(data[:].mask,fv,idata)
                     dst[name].add_offset=offset
