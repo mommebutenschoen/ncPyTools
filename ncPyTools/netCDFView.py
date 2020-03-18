@@ -87,7 +87,8 @@ class netCDFView(Dataset):
 
     def time(self):
         """
-        Try to extract time.
+        Try to extract time variable.
+        This routine will stop searching once the first valid time variable is found in the file.
 
         Returns:
             Time variable data, `None` if unsuccessful.
@@ -102,13 +103,13 @@ class netCDFView(Dataset):
                     # if this doesn't fail it's a time variable
                     Date = n2d(0, Var.units)
                     Time = Var[:]
-                except:
+                except (ValueError, AttributeError):
                     pass
-            return Time
+        return Time
 
     def dates(self):
         """
-        Try to extract dates.
+        Try to extract dates from first valid time variable found in file.
 
         Returns:
             Time variable as datetime object, `None` if unsuccessful.
@@ -116,16 +117,23 @@ class netCDFView(Dataset):
 
         Dates = None
         for key, Var in self.variables.items():
-            if key == 'time':
+            time_key=""
+            try:
                 n2d(0, Var.units)
-                if "calendar" in self.variables["time"].ncattrs():
-                    calstr=self.variables["time"].calendar
-                else:
-                    calstr="standard"
-                try:
-                    Dates = n2d(Var[:], Var.units,calendar=calstr)
-                except:
-                    print("Couldn't find time variable with valid date units.")
+                time_key=key
+                break
+            except (ValueError, AttributeError):
+                pass
+        if time_key:
+            if "calendar" in self.variables[time_key].ncattrs():
+                calstr=self.variables[time_key].calendar
+            else:
+                calstr="standard"
+            try:
+                Dates = n2d(Var[:], Var.units,calendar=calstr)
+            except:
+                print("Couldn't find time variable with valid date units.")
+                return
         return Dates
 
     def __call__(self, varStr, Squeeze=True, Object=False):
