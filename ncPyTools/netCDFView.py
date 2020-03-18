@@ -118,8 +118,8 @@ class netCDFView(Dataset):
         for key, Var in self.variables.items():
             if key == 'time':
                 n2d(0, Var.units)
-                if "calendar" in nc.variables["time"].ncattrs():
-                    calstr=nc.variables["time"].calendar
+                if "calendar" in self.variables["time"].ncattrs():
+                    calstr=self.variables["time"].calendar
                 else:
                     calstr="standard"
                 try:
