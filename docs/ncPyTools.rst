@@ -31,8 +31,17 @@ ncPyTools.ncoGridFile module
     :special-members:
     :show-inheritance:
 
+ncPyTools.netCDFReduce module
+---------------------------
+
+.. automodule:: ncPyTools.netCDFReduce
+    :members:
+    :undoc-members:
+    :special-members:
+    :show-inheritance:
+
 ncPyTools.netCDFView module
-    ---------------------------
+---------------------------
 
 .. automodule:: ncPyTools.netCDFView
     :members:
