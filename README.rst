@@ -115,6 +115,6 @@ Or install the latest releaase from PyPI::
 Documentation:
 --------------
 
-Documentation of this package can be found here_.
+Documentation of this package can be found readthedocs_.
 
 .. _readthedocs: https://ncpytoolsxtns.readthedocs.io/
