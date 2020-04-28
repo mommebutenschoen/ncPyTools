@@ -1,4 +1,5 @@
 from numpy import array2string
+import logging
 
 class gridfile:
     """Python class for nco gridfile."""
@@ -82,5 +83,5 @@ class gridfile:
             gridfile+="\n#Latitudes of cell corners\n"
             for l in self.lat_bounds.reshape([-1,4]):
                 gridfile+=array2string(l,separator=" ")[1:-1]
-            print("Gridfile: ",gridfile)
+            logging.info("Gridfile: ",gridfile)
             return gridfile
