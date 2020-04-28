@@ -95,12 +95,26 @@ Example `yaml` metadata file::
 Installation:
 -------------
 
-After downloading the source from the repository install via pip, descend
+After downloading the source from github_ install via pip, descending
 into the top-level of the source tree
-and launch::
+and launching::
 
-  pip3 install .
+  pip install .
 
 or to install in developers mode::
 
-  pip3 install -e .
+  pip install -e .
+
+Or install the latest releaase from PyPI::
+
+  pip install ncPyTools
+
+.. _github: https://github.com/mommebutenschoen/ncPyTools
+
+
+Documentation:
+--------------
+
+Documentation of this package can be found here_.
+
+.. _readthedocs: https://ncpytoolsxtns.readthedocs.io/
