@@ -39,7 +39,7 @@ Help-string::
     -n NOMASK, --nomask NOMASK
                           Don't mask fill values
 
-In order to obatin an interactive prompt with the netcdf file loaded into a the `ncdfView` object called `nc`
+In order to obtain an interactive prompt with the netcdf file loaded into a the `ncdfView` object called `nc`
 launch::
 
   python3 -i -m ncPyTools.ncdfViewncPyTools.ncdfView
@@ -105,7 +105,7 @@ or to install in developers mode::
 
   pip install -e .
 
-Or install the latest releaase from PyPI::
+Or install the latest release from PyPI::
 
   pip install ncPyTools
 
@@ -115,6 +115,6 @@ Or install the latest releaase from PyPI::
 Documentation:
 --------------
 
-Documentation of this package can be found readthedocs_.
+Documentation of this package can be found on readthedocs_.
 
 .. _readthedocs: https://ncpytoolsxtns.readthedocs.io/
