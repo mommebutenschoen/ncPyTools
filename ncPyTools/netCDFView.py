@@ -242,13 +242,12 @@ class netCDFView(Dataset):
                 Must have the same geometry as the calling object.
             varStr (str): string identifying the variable to compare.
             refStr (str): string of variable to compare in the reference object.
-                Defaults to varStr.
             scaleFunction: function to scale reference data before comparison,
                 taking a single argument of the type of the reference data and
                 returning the same type and shape.
-                By default no scaling is applied. Should return data of the same shape and type as
+                If False no scaling is applied. Should return data of the same shape and type as
             relative(integer): Flag to normalise differences.
-                0, default - no normalisation
+                0 - no normalisation
                 1 - (scaled) reference data
                 2 - 0.5*(variables data + (scaled) reference data)
         """

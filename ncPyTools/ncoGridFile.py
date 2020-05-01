@@ -41,7 +41,8 @@ class gridfile:
         """Generates gridfile string.
 
         Args:
-            fid(TextIOWrapper): if present, TextIOWrapper to write gridfile inspection
+            fid(TextIOWrapper): if present, TextIOWrapper  where to write
+                gridfile inspection
 
         Returns:
             gridfile string if fid argument is not present

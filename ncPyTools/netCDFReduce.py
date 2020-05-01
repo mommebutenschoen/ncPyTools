@@ -13,7 +13,7 @@ def netCDFRound(fname,vlist,digits,outpath="",Quiet=False):
             filename(str): input netcdf file including path
             vlist(list of str): list of variables to round
             digits(int): number of significant digits to keep
-            outpath(str): path where to place reduced size file, defaults to the
+            outpath(str): path where to place reduced size file, if False
                 same path as input file
     """
 
@@ -58,7 +58,7 @@ def netCDFPack(fname,vlist,outpath="",Quiet=False):
     Args:
             filename(str): input netcdf file including path
             vlist(list of str): list of variables to round
-            outpath(str): path where to place reduced size file, defaults to the
+            outpath(str): path where to place reduced size file, if False
                 same path as input file
             Quiet(bool): if False print log messages, otherwise operate quietly
     """
