@@ -111,6 +111,8 @@ setup(
         'console_scripts': [
             'netCDFView=ncPyTools.netCDFView:ncdfView',
             'netCDFTemplate=ncPyTools.netCDFTemplate:ncdfTemplate',
+            'netCDFPack=ncPyTools.netCDFReduce:ncdfPack',
+            'netCDFUnpack=ncPyTools.netCDFReduce:ncdfUnpack'
         ],
     },
 )
