@@ -81,7 +81,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['netCDF4', 'pyyaml', 'numpy'],
+    install_requires=['netCDF4', 'pyyaml', 'numpy','xarray'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
@@ -110,6 +110,7 @@ setup(
     entry_points={
         'console_scripts': [
             'netCDFView=ncPyTools.netCDFView:ncdfView',
+            'netCDFXarrayView=ncPyTools.netCDFXarrayView:ncXarrayView',
             'netCDFTemplate=ncPyTools.netCDFTemplate:ncdfTemplate',
             'netCDFPack=ncPyTools.netCDFReduce:ncdfPack',
             'netCDFUnpack=ncPyTools.netCDFReduce:ncdfUnpack'

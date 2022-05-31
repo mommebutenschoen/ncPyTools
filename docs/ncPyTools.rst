@@ -22,6 +22,15 @@ ncPyTools.netCDFView module
     :special-members:
     :show-inheritance:
 
+ncPyTools.netCDFXarrayView module
+---------------------------
+
+.. automodule:: ncPyTools.netCDFXarrayView
+    :members:
+    :undoc-members:
+    :special-members:
+    :show-inheritance:
+
 ncPyTools.ncoGridFile module
 ----------------------------
 
